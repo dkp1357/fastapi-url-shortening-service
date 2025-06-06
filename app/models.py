@@ -1,21 +1,25 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel
+from sqlmodel import Field, SQLModel
 
-
-# Request Model
+class URL(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    url: str
+    short_code: str = Field(index=True, unique=True)
+    created_at: datetime
+    updated_at: datetime
+    access_count: int = 0
+    
 class URLRequest(BaseModel):
-    url: HttpUrl
-    length: Optional[int] = Field(default=6, ge=3, le=30)
-    # length: Optional[int] = 6
-
-
-# Response model
+    url: str
+    length: Optional[int] = 6
+    
 class URLResponse(BaseModel):
-    id: int
-    url: HttpUrl
-    shortCode: str
-    createdAt: datetime
-    updatedAt: datetime
-    accessCount: int = 0
+    id: int | None
+    url: str
+    short_code: str
+    created_at: datetime
+    updated_at: datetime
+    access_count: int
