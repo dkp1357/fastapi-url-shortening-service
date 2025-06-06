@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from app.routes import router
 from app.database import create_db
+from app.routes import router
 
 app = FastAPI()
 
@@ -12,6 +12,7 @@ def initialize():
 
 
 app.include_router(router)
+
 
 @app.get("/")
 async def root():
