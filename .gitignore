@@ -8,3 +8,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+#data base file
+urls.db
