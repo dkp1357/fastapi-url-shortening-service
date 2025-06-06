@@ -4,9 +4,10 @@ from datetime import datetime
 from typing import Optional
 from zoneinfo import ZoneInfo
 
-from fastapi import HTTPException
-from models import URLRequest, URLResponse
-from routes import router, url_store
+from fastapi import HTTPException, Response
+
+from app.models import URLRequest, URLResponse
+from app.routes import router, url_store
 
 
 # default length of 6
@@ -51,7 +52,7 @@ async def shorten_url(request: URLRequest):
 @router.get("/shorten/{short_code}", response_model=URLResponse, status_code=200)
 async def get_original_url(short_code: str):
     if short_code not in url_store:
-        return HTTPException(status_code=404, detail="shortCode not found")
+        raise HTTPException(status_code=404, detail="shortCode not found")
 
     url_store[short_code].accessCount += 1
     return url_store[short_code]
@@ -60,7 +61,7 @@ async def get_original_url(short_code: str):
 @router.put("/shorten/{short_code}", response_model=URLResponse, status_code=200)
 async def update_short_url(short_code: str, request: URLRequest):
     if short_code not in url_store:
-        return HTTPException(status_code=404, detail="shortCode not found")
+        raise HTTPException(status_code=404, detail="shortCode not found")
 
     entry = url_store[short_code]
     entry.url = request.url
@@ -74,9 +75,10 @@ async def update_short_url(short_code: str, request: URLRequest):
 @router.delete("/shorten/{short_code}", status_code=204)
 async def delete_short_url(short_code: str):
     if short_code not in url_store:
-        return HTTPException(status_code=404, detail="shortCode not found")
+        raise HTTPException(status_code=404, detail="shortCode not found")
 
     del url_store[short_code]
+    return Response(status_code=204)
 
 
 @router.get("/shorten/{short_code}/stats", response_model=URLResponse)
