@@ -8,5 +8,3 @@ url_store = {}
 
 # base url
 BASE_DOMAIN = "http://127.0.0.1:8000"
-
-
